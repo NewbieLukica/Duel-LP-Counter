@@ -1,0 +1,34 @@
+# Build artifacts
+bin/
+gen/
+out/
+build/
+.gradle/
+app/build/
+
+# Android Studio / IntelliJ
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Local configuration
+local.properties
+
+# Log files
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Captures
+captures/
+
+# External Native Build
+.externalNativeBuild/
+.cxx/
+
+# Assets
+/app/src/main/assets/
+# (Keep this commented if you want to include assets by default, or uncomment to ignore them)
