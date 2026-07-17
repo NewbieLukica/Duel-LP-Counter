@@ -26,6 +26,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
@@ -42,6 +43,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlin.time.Duration.Companion.milliseconds
 import com.example.duellpcounter.ui.theme.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -358,7 +360,7 @@ fun PlayerArea(
         if (diff != 0) {
             feedbackValue = diff
             feedbackVisible = true
-            delay(500)
+            delay(500.milliseconds)
             feedbackVisible = false
         }
         lastLp = lp
@@ -367,14 +369,14 @@ fun PlayerArea(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(12.dp)
+            .padding(8.dp)
             .drawCornerBorders(AncientGold)
             .padding(4.dp)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
+                .padding(8.dp)
         ) {
             Row(
                 modifier = Modifier
@@ -403,9 +405,12 @@ fun PlayerArea(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth(),
-                contentAlignment = Alignment.Center
+                contentAlignment = BiasAlignment(0f, -0.2f)
             ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
                     Box(modifier = Modifier.height(24.dp), contentAlignment = Alignment.Center) {
                         LpFeedback(visible = feedbackVisible, value = feedbackValue)
                     }
@@ -413,7 +418,7 @@ fun PlayerArea(
                     Text(
                         text = lp.toString().padStart(4, '0'),
                         style = MaterialTheme.typography.displayLarge.copy(
-                            fontSize = 72.sp,
+                            fontSize = 64.sp,
                             fontWeight = FontWeight.Black,
                             fontFamily = FontFamily.Serif,
                             letterSpacing = 2.sp,
@@ -430,7 +435,7 @@ fun PlayerArea(
 
             Column(
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -897,7 +902,7 @@ fun DiceRollPanel() {
                         } while (next == lastResult && it < 10) // Try to avoid same number during animation sequence
                         result = next
                         lastResult = next
-                        delay((60 + it * 5).toLong()) // Slightly slow down
+                        delay((60 + it * 5).milliseconds) // Slightly slow down
                     }
                     result = secureRandom.nextInt(6) + 1
                     isRolling = false
