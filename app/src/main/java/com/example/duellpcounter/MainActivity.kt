@@ -43,6 +43,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import kotlin.time.Duration.Companion.milliseconds
 import com.example.duellpcounter.ui.theme.*
 import kotlinx.coroutines.delay
@@ -65,6 +68,14 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun DuelApp() {
+    val currentView = LocalView.current
+    DisposableEffect(currentView) {
+        currentView.keepScreenOn = true
+        onDispose {
+            currentView.keepScreenOn = false
+        }
+    }
+
     var p1Lp by rememberSaveable { mutableIntStateOf(8000) }
     var p2Lp by rememberSaveable { mutableIntStateOf(8000) }
     var p1Name by rememberSaveable { mutableStateOf("Player 1") }
@@ -428,7 +439,8 @@ fun PlayerArea(
                                 blurRadius = 12f
                             )
                         ),
-                        color = Color.White
+                        color = Color.White,
+                        modifier = Modifier.clickable { showSetLpOverlay = true }
                     )
                 }
             }
@@ -490,6 +502,10 @@ fun PlayerArea(
 
         if (showSetLpOverlay) {
             var inputLp by remember { mutableStateOf("") }
+            val focusRequester = remember { FocusRequester() }
+            LaunchedEffect(Unit) {
+                focusRequester.requestFocus()
+            }
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -513,7 +529,7 @@ fun PlayerArea(
                         onValueChange = { if (it.all { char -> char.isDigit() }) inputLp = it },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         singleLine = true,
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth().focusRequester(focusRequester),
                         textStyle = LocalTextStyle.current.copy(fontFamily = FontFamily.Serif),
                         colors = TextFieldDefaults.colors(
                             focusedTextColor = Color.White,
@@ -546,6 +562,10 @@ fun PlayerArea(
 
         if (showRenameOverlay) {
             var inputName by remember { mutableStateOf(name) }
+            val focusRequester = remember { FocusRequester() }
+            LaunchedEffect(Unit) {
+                focusRequester.requestFocus()
+            }
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -568,7 +588,7 @@ fun PlayerArea(
                         value = inputName,
                         onValueChange = { inputName = it },
                         singleLine = true,
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth().focusRequester(focusRequester),
                         textStyle = LocalTextStyle.current.copy(fontFamily = FontFamily.Serif),
                         colors = TextFieldDefaults.colors(
                             focusedTextColor = Color.White,
